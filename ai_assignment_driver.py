@@ -18,7 +18,7 @@ input_data = np.array([[63, 1, 3, 145, 233, 1, 0, 150, 0, 2.3, 0, 0, 1]])
 
 # Make prediction
 prediction = model.predict(input_data)
-
+st.title("Heart Disease Prediction")
 if prediction[0] == 1:
     print("⚠️ Heart Disease Risk Detected")
 else:
