@@ -52,7 +52,7 @@ if st.button("Predict Heart Disease Risk"):
 
     input_scaled = scaler.transform(input_data)
 
-prediction = model.predict(input_scaled)
+    prediction = model.predict(input_scaled)
 
     if prediction[0] == 1:
         st.error("⚠️ Heart Disease Risk Detected")
