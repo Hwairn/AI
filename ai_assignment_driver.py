@@ -6,7 +6,7 @@ import numpy as np
 st.title("Heart Disease Prediction System")
 
 st.write("Enter patient information below to predict heart disease risk.")
-
+scaler = joblib.load("scaler.joblib")
 # Model selection
 model_choice = st.selectbox(
     "Select Machine Learning Model",
@@ -18,10 +18,8 @@ if model_choice == "ANN":
     model = joblib.load("ann_model.joblib")
 elif model_choice == "KNN":
     model = joblib.load("knn_model.joblib")
-    scaler = joblib.load("scaler.joblib")
 else:
     model = joblib.load("svm_model.joblib")
-    scaler = joblib.load("scaler.joblib")
 
 # Input fields
 age = st.number_input("Age", 1, 120)
