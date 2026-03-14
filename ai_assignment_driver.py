@@ -5,15 +5,18 @@ import numpy as np
 # Page title
 st.title("Heart Disease Prediction System")
 
-st.write("Enter patient information below to predict heart disease risk.")
+st.write("Testing with a predefined healthy input.")
+
+# Load scaler and model
 scaler = joblib.load("scaler.joblib")
-# Model selection
+
+# Choose the model to test
 model_choice = st.selectbox(
     "Select Machine Learning Model",
     ("ANN", "KNN", "SVM")
 )
 
-# Load model based on user selection
+# Load the corresponding model
 if model_choice == "ANN":
     model = joblib.load("ann_model.joblib")
 elif model_choice == "KNN":
@@ -21,38 +24,23 @@ elif model_choice == "KNN":
 else:
     model = joblib.load("svm_model.joblib")
 
-# Input fields
-age = st.number_input("Age", 1, 120)
-sex = st.selectbox("Sex", ["Female (0)", "Male (1)"])
-cp = st.number_input("Chest Pain Type (0-3)", 0, 3)
-trestbps = st.number_input("Resting Blood Pressure", 80, 200)
-chol = st.number_input("Cholesterol", 100, 600)
-fbs = st.selectbox("Fasting Blood Sugar > 120 mg/dl", ["False (0)", "True (1)"])
-restecg = st.number_input("Resting ECG (0-2)", 0, 2)
-thalach = st.number_input("Maximum Heart Rate Achieved", 60, 220)
-exang = st.selectbox("Exercise Induced Angina", ["No (0)", "Yes (1)"])
-oldpeak = st.number_input("ST Depression (oldpeak)", 0.0, 10.0)
-slope = st.number_input("Slope (0-2)", 0, 2)
-ca = st.number_input("Number of Major Vessels (0-3)", 0, 3)
-thal = st.number_input("Thalassemia (1-3)", 1, 3)
+# -------------------------
+# Hardcoded safe healthy input
+# -------------------------
+# Safe healthy input:
+# age=35, sex=0, cp=1, trestbps=110, chol=180, fbs=0,
+# restecg=0, thalach=190, exang=0, oldpeak=0.0, slope=2, ca=0, thal=2
+input_data = np.array([[35, 0, 1, 110, 180, 0, 0, 190, 0, 0.0, 2, 0, 2]])
 
-# Convert categorical text to numeric
-sex = 1 if sex == "Male (1)" else 0
-fbs = 1 if fbs == "True (1)" else 0
-exang = 1 if exang == "Yes (1)" else 0
+# Scale the input
+input_scaled = scaler.transform(input_data)
 
-# Predict button
-if st.button("Predict Heart Disease Risk"):
+# Make prediction
+prediction = model.predict(input_scaled)
 
-    input_data = np.array([[age, sex, cp, trestbps, chol, fbs,
-                            restecg, thalach, exang, oldpeak,
-                            slope, ca, thal]])
-
-    input_scaled = scaler.transform(input_data)
-
-    prediction = model.predict(input_scaled)
-
-    if prediction[0] == 1:
-        st.error("⚠️ Heart Disease Risk Detected")
-    else:
-        st.success("✅ No Heart Disease Detected")
+# Show result
+st.write("Input data:", input_data)
+if prediction[0] == 1:
+    st.error("⚠️ Heart Disease Risk Detected")
+else:
+    st.success("✅ No Heart Disease Detected")
