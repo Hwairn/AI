@@ -18,8 +18,10 @@ if model_choice == "ANN":
     model = joblib.load("ann_model.joblib")
 elif model_choice == "KNN":
     model = joblib.load("knn_model.joblib")
+    scaler = joblib.load("scaler.joblib")
 else:
     model = joblib.load("svm_model.joblib")
+    scaler = joblib.load("scaler.joblib")
 
 # Input fields
 age = st.number_input("Age", 1, 120)
@@ -48,7 +50,9 @@ if st.button("Predict Heart Disease Risk"):
                             restecg, thalach, exang, oldpeak,
                             slope, ca, thal]])
 
-    prediction = model.predict(input_data)
+    input_scaled = scaler.transform(input_data)
+
+prediction = model.predict(input_scaled)
 
     if prediction[0] == 1:
         st.error("⚠️ Heart Disease Risk Detected")
