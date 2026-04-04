@@ -11,6 +11,8 @@ import streamlit as st
 import joblib
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+
 st.title("Diabetes Prediction System")
 
 st.write("Enter patient details to predict diabetes risk.")
@@ -93,9 +95,6 @@ if st.button("Predict Diabetes Risk"):
     st.write("### Prediction Probability")
     st.write(f"No Diabetes: {prob_no*100:.2f}%")
     st.write(f"Diabetes: {prob_yes*100:.2f}%")
-
-import pandas as pd
-import matplotlib.pyplot as plt
 
 # Load saved metrics
 accuracy = joblib.load("accuracy.joblib")
