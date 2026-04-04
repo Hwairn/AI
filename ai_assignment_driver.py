@@ -94,47 +94,85 @@ if st.button("Predict Diabetes Risk"):
     st.write(f"No Diabetes: {prob_no*100:.2f}%")
     st.write(f"Diabetes: {prob_yes*100:.2f}%")
 
-st.subheader("Model Accuracy Comparison")
+import pandas as pd
+import matplotlib.pyplot as plt
 
-acc_df = pd.DataFrame({
-    "Model": ["KNN", "SVM", "ANN"],
-    "Accuracy (%)": [
-        accuracy["KNN"] * 100,
-        accuracy["SVM"] * 100,
-        accuracy["ANN"] * 100
-    ]
-})
+# Load saved metrics
+accuracy = joblib.load("accuracy.joblib")
+cm_dict = joblib.load("confusion_matrix.joblib")
+report_dict = joblib.load("report.joblib")
+roc_dict = joblib.load("roc.joblib")
 
-st.table(acc_df)
+st.header("📊 Model Performance Dashboard")
 
-st.subheader("Accuracy Comparison Chart")
+# -------------------------
+# Accuracy Table + Chart
+# -------------------------
+col1, col2 = st.columns(2)
 
-chart_data = pd.DataFrame({
-    "Model": ["KNN", "SVM", "ANN"],
-    "Accuracy": [
-        accuracy["KNN"],
-        accuracy["SVM"],
-        accuracy["ANN"]
-    ]
-})
+with col1:
+    st.subheader("Accuracy Table")
+    acc_df = pd.DataFrame({
+        "Model": ["KNN", "SVM", "ANN"],
+        "Accuracy (%)": [
+            accuracy["KNN"]*100,
+            accuracy["SVM"]*100,
+            accuracy["ANN"]*100
+        ]
+    })
+    st.table(acc_df)
 
-st.bar_chart(chart_data.set_index("Model"))
+with col2:
+    st.subheader("Accuracy Chart")
+    st.bar_chart(acc_df.set_index("Model"))
 
-st.subheader("Confusion Matrix")
+# -------------------------
+# Model Selection
+# -------------------------
+st.subheader("Detailed Model Analysis")
 
 selected_model = st.selectbox(
-    "Select Model for Confusion Matrix",
+    "Select Model",
     ("KNN", "SVM", "ANN")
 )
 
-cm = cm_dict[selected_model]
+# -------------------------
+# Confusion Matrix
+# -------------------------
+st.write("### Confusion Matrix")
 
+cm = cm_dict[selected_model]
 cm_df = pd.DataFrame(
     cm,
     index=["Actual No", "Actual Yes"],
     columns=["Predicted No", "Predicted Yes"]
 )
 
-st.write(f"{selected_model} Confusion Matrix")
 st.table(cm_df)
 
+# -------------------------
+# Classification Report
+# -------------------------
+st.write("### Precision / Recall / F1-score")
+
+report = report_dict[selected_model]
+
+report_df = pd.DataFrame(report).transpose()
+st.dataframe(report_df)
+
+# -------------------------
+# ROC Curve
+# -------------------------
+st.write("### ROC Curve")
+
+roc = roc_dict[selected_model]
+
+fig, ax = plt.subplots()
+ax.plot(roc["fpr"], roc["tpr"], label=f"AUC = {roc['auc']:.2f}")
+ax.plot([0,1], [0,1], linestyle="--")  # diagonal line
+ax.set_xlabel("False Positive Rate")
+ax.set_ylabel("True Positive Rate")
+ax.set_title(f"{selected_model} ROC Curve")
+ax.legend()
+
+st.pyplot(fig)
