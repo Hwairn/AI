@@ -19,6 +19,8 @@ st.write("Enter patient details to predict diabetes risk.")
 scaler = joblib.load("scaler.joblib")
 gender_encoder = joblib.load("gender_encoder.joblib")
 smoke_encoder = joblib.load("smoke_encoder.joblib")
+accuracy = joblib.load("accuracy.joblib")
+cm_dict = joblib.load("confusion_matrix.joblib")
 
 # Model selection
 model_choice = st.selectbox(
@@ -91,3 +93,48 @@ if st.button("Predict Diabetes Risk"):
     st.write("### Prediction Probability")
     st.write(f"No Diabetes: {prob_no*100:.2f}%")
     st.write(f"Diabetes: {prob_yes*100:.2f}%")
+
+st.subheader("Model Accuracy Comparison")
+
+acc_df = pd.DataFrame({
+    "Model": ["KNN", "SVM", "ANN"],
+    "Accuracy (%)": [
+        accuracy["KNN"] * 100,
+        accuracy["SVM"] * 100,
+        accuracy["ANN"] * 100
+    ]
+})
+
+st.table(acc_df)
+
+st.subheader("Accuracy Comparison Chart")
+
+chart_data = pd.DataFrame({
+    "Model": ["KNN", "SVM", "ANN"],
+    "Accuracy": [
+        accuracy["KNN"],
+        accuracy["SVM"],
+        accuracy["ANN"]
+    ]
+})
+
+st.bar_chart(chart_data.set_index("Model"))
+
+st.subheader("Confusion Matrix")
+
+selected_model = st.selectbox(
+    "Select Model for Confusion Matrix",
+    ("KNN", "SVM", "ANN")
+)
+
+cm = cm_dict[selected_model]
+
+cm_df = pd.DataFrame(
+    cm,
+    index=["Actual No", "Actual Yes"],
+    columns=["Predicted No", "Predicted Yes"]
+)
+
+st.write(f"{selected_model} Confusion Matrix")
+st.table(cm_df)
+
