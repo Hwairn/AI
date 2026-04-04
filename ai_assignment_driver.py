@@ -10,7 +10,7 @@ Original file is located at
 import streamlit as st
 import joblib
 import numpy as np
-
+import pandas as pd
 st.title("Diabetes Prediction System")
 
 st.write("Enter patient details to predict diabetes risk.")
