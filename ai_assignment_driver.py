@@ -154,29 +154,40 @@ with tab2:
         ("KNN", "SVM", "ANN")
     )
 
-# Confusion Matrix
+    # Confusion Matrix
     st.write("### Confusion Matrix")
+
     cm = cm_dict[selected_model]
+
     fig, ax = plt.subplots()
 
-# Plot heatmap
-    cax = ax.matshow(cm)
+# White → Blue color map
+    cax = ax.imshow(cm, cmap="Blues")
 
-# Add color bar
+# Color bar
     fig.colorbar(cax)
-    
+
 # Labels
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Actual")
+    ax.set_title(f"{selected_model} Confusion Matrix")
+
+# Tick labels
     ax.set_xticks([0, 1])
     ax.set_yticks([0, 1])
-
     ax.set_xticklabels(["No", "Yes"])
     ax.set_yticklabels(["No", "Yes"])
 
-# Show values inside boxes
-    for (i, j), val in np.ndenumerate(cm):
-        ax.text(j, i, f"{val}", ha='center', va='center')
+# Add numbers inside boxes
+    for i in range(cm.shape[0]):
+      for j in range(cm.shape[1]):
+        ax.text(j, i, cm[i, j],
+        ha="center", va="center",
+        color="black")
+
+# Make background white
+    fig.patch.set_facecolor('white')
+    ax.set_facecolor('white')
 
     st.pyplot(fig)
 
