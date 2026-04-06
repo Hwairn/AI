@@ -154,37 +154,31 @@ with tab2:
         ("KNN", "SVM", "ANN")
     )
 
-    import matplotlib.pyplot as plt
-import numpy as np
-
 # Confusion Matrix
-st.write("### Confusion Matrix")
-
-cm = cm_dict[selected_model]
-
-fig, ax = plt.subplots()
+    st.write("### Confusion Matrix")
+    cm = cm_dict[selected_model]
+    fig, ax = plt.subplots()
 
 # Plot heatmap
-cax = ax.matshow(cm)
+    cax = ax.matshow(cm)
 
 # Add color bar
-fig.colorbar(cax)
-
+    fig.colorbar(cax)
+    
 # Labels
-ax.set_xlabel("Predicted")
-ax.set_ylabel("Actual")
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("Actual")
+    ax.set_xticks([0, 1])
+    ax.set_yticks([0, 1])
 
-ax.set_xticks([0, 1])
-ax.set_yticks([0, 1])
-
-ax.set_xticklabels(["No", "Yes"])
-ax.set_yticklabels(["No", "Yes"])
+    ax.set_xticklabels(["No", "Yes"])
+    ax.set_yticklabels(["No", "Yes"])
 
 # Show values inside boxes
-for (i, j), val in np.ndenumerate(cm):
-    ax.text(j, i, f"{val}", ha='center', va='center')
+    for (i, j), val in np.ndenumerate(cm):
+        ax.text(j, i, f"{val}", ha='center', va='center')
 
-st.pyplot(fig)
+    st.pyplot(fig)
 
     # Classification Report
     st.write("### Precision / Recall / F1-score")
