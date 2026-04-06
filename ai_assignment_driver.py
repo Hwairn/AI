@@ -155,33 +155,15 @@ with tab2:
     )
 
     # Confusion Matrix
-st.write("### Confusion Matrix")
+    st.write("### Confusion Matrix")
+    cm = cm_dict[selected_model]
 
-cm = cm_dict[selected_model]
-
-fig, ax = plt.subplots()
-
-# Plot heatmap
-cax = ax.matshow(cm)
-
-# Add color bar
-fig.colorbar(cax)
-
-# Labels
-ax.set_xlabel("Predicted")
-ax.set_ylabel("Actual")
-
-ax.set_xticks([0, 1])
-ax.set_yticks([0, 1])
-
-ax.set_xticklabels(["No", "Yes"])
-ax.set_yticklabels(["No", "Yes"])
-
-# Show values inside boxes
-for (i, j), val in np.ndenumerate(cm):
-    ax.text(j, i, f"{val}", ha='center', va='center')
-
-st.pyplot(fig)
+    cm_df = pd.DataFrame(
+        cm,
+        index=["Actual No", "Actual Yes"],
+        columns=["Predicted No", "Predicted Yes"]
+    )
+    st.dataframe(cm_df)
 
     # Classification Report
     st.write("### Precision / Recall / F1-score")
